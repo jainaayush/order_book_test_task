@@ -1,4 +1,6 @@
-import React, { FunctionComponent } from "react";
+import React, { ChangeEvent, FunctionComponent } from "react";
+import { useAppDispatch, useAppSelector } from "../../Hooks";
+import { selectGrouping, setGrouping } from "../OrderBook/orderbookSlice";
 import { MenuItem, Select } from "@material-ui/core";
 
 interface SelectGroupProps {
@@ -8,15 +10,29 @@ interface SelectGroupProps {
 export const SelectGroup: FunctionComponent<SelectGroupProps> = ({
   options,
 }) => {
+  const groupingSize: number = useAppSelector(selectGrouping);
+  const dispatch = useAppDispatch();
+
+  const handleChange = (
+    event: ChangeEvent<{ name?: string | undefined; value: unknown }>
+  ) => {
+    return dispatch(setGrouping(Number(event.target.value) as any));
+  };
+
   return (
     <>
       <Select
         labelId="group-select-label"
         id="group-select"
-        value={"groupingSize"}
+        value={groupingSize}
         label="Group"
+        onChange={handleChange}
       >
-        <MenuItem>option1</MenuItem>
+        {options.map((option, idx) => (
+          <MenuItem key={idx} value={option}>
+            Group {option}
+          </MenuItem>
+        ))}
       </Select>
     </>
   );
